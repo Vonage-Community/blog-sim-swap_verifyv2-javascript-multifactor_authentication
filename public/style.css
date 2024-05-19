@@ -7,7 +7,7 @@ body {
 }
 
 header {
-  background-color: #04AA6D;
+  background-color: #04aa6d;
   color: white;
   text-align: center;
   padding: 20px;
@@ -48,7 +48,8 @@ form {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-input[type=text], input[type=password] {
+input[type="text"],
+input[type="password"] {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -59,7 +60,7 @@ input[type=text], input[type=password] {
 }
 
 button {
-  background-color: #04AA6D;
+  background-color: #04aa6d;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -90,7 +91,8 @@ button:hover {
   cursor: pointer;
 }
 
-.forgotbtn:hover, .cancelbtn:hover {
+.forgotbtn:hover,
+.cancelbtn:hover {
   opacity: 0.8;
 }
 
@@ -105,11 +107,11 @@ span.psw {
 
 @media screen and (max-width: 300px) {
   span.psw {
-    display: block;
-    float: none;
+      display: block;
+      float: none;
   }
   .cancelbtn {
-    width: 100%;
+      width: 100%;
   }
 }
 
@@ -143,8 +145,24 @@ span.psw {
   font-weight: bold;
 }
 
-.close:hover, .close:focus {
+.close:hover,
+.close:focus {
   color: #000;
   text-decoration: none;
   cursor: pointer;
+}
+
+#logoutButton {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #1e90ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: block;
+  margin: 10px auto;
+}
+
+.logoutButton:hover {
+  opacity: 0.8;
 }
