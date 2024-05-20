@@ -28,6 +28,14 @@ let phoneNumber = null;
 let verifyRequestId = null;
 let pwd = "123"; // Initial password
 
+// In-memory store for user data
+const users = {
+  user1: {
+    username: "user1",
+    password: "123",
+  },
+};
+
 // Serve the index.html file
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views/index.html"));
@@ -108,8 +116,7 @@ async function checkSim() {
 
 // Route to send a verification code via Verify2 API using Channels
 app.post("/sendcode", async (req, res) => {
-  // overrides default phone number with the RECIPIENT_NUMBER variable
-  const phone = process.env.RECIPIENT_NUMBER ? process.env.RECIPIENT_NUMBER: phoneNumber;
+  const phone = process.env.RECIPIENT_NUMBER ? process.env.RECIPIENT_NUMBER : req.body.phone;
  
   try {
     const response = await vonage.verify2.newRequest({
@@ -149,11 +156,19 @@ app.post("/simswap", async (req, res) => {
 
 // Handle PIN verification
 app.post("/verify", (req, res) => {
-  const { pin } = req.body;
+  const { pin, newPass } = req.body;
   vonage.verify2
     .checkCode(verifyRequestId, pin)
     .then((status) => {
       if (status === "completed") {
+        // Update the password in the in-memory store
+        const user = Object.values(users).find(user => user.username === "user1");
+        if (user) {
+          user.password = newPass;
+        } else {
+          res.status(404).json({ message: "User not found." });
+          return;
+        }
         res.json({ message: "Success" });
       } else {
         res.json({ message: "Invalid verification code. Please try again." });
@@ -168,14 +183,20 @@ app.post("/verify", (req, res) => {
 // Update password
 app.post("/update", (req, res) => {
   const { newPass } = req.body;
-  pwd = newPass;
-  res.json({ message: "Success" });
+  const user = Object.values(users).find(user => user.username === "user1"); // assuming user1
+  if (user) {
+    user.password = newPass;
+    res.json({ message: "Success" });
+  } else {
+    res.status(404).json({ message: "User not found." });
+  }
 });
 
 // Handle login request
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-  if (password === pwd) {
+  const user = users[username];
+  if (user && user.password === password) {
     res.json({ message: "Success" });
   } else {
     res.status(401).json({ message: "Invalid user and password" });
